@@ -2,8 +2,8 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-19 10:35:01
- * @FilePath: \服务器\templates\Pic.html
+ * @LastEditTime: 2023-05-21 01:36:09
+ * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
  * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
@@ -123,6 +123,22 @@
         button:hover {
             background-color: #3e8e41;
         }
+
+        #floating-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #333;
+        color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        z-index: 9999;
+        }
+
+        #floating-box p {
+        margin: 0;
+        }
     </style>
 </head>
 
@@ -136,21 +152,13 @@
     <button onclick="changeImage2NSFW()">切换高级版</button>
     <button onclick="changeImage2SFW()">切换普通版</button>
     {% endif %}
-    <form action="{{ url_for('pic') }}" method="POST" style="display:inline-block;">
-        <input type="hidden" name="button" value="good">
-        <input type="hidden" name="pic_path" value=>
-        <button type="submit">赞</button>
-    </form>
-    <form action="{{ url_for('pic') }}" method="POST" style="display:inline-block;">
-        <input type="hidden" name="button" value="bad">
-        <input type="hidden" name="pic_path" value=>
-        <button type="submit">踩</button>
-    <form action="{{ url_for('pic') }}" method="POST">
-        <input type="hidden" name="button" value="wrong">
-        <input type="hidden" name="pic_path" value=>
-        <button type="submit">分类错误</button>
-    </form>
+    <button onclick="goodButton()" style="display:inline-block;">好看</button>
+    <button onclick="badButton()" style="display:inline-block;" color="red">不好看</button>
+    <button onclick="wrongButton()" style="display:inline-block;" color="red";>分类错了</button>
     <p id="myImageText">第一张图片</p>
+    <div id="floating-box">
+        <p id="message"></p>
+    </div>
     <div class="slider-container">
         <input type="range" min="50" max="200" value="100" id="zoom-slider">
     </div>
@@ -197,6 +205,52 @@
 
             // 如果需要等比例缩放图片，并始终填充容器，请使用以下注释中提供的代码。
         });
+        
+        function showMessage(message, duration) {
+            var box = document.getElementById("floating-box");
+            var msg = document.getElementById("message");
+
+            // 显示消息
+            msg.innerHTML = message;
+
+            // 显示提示框
+            box.style.display = "block";
+
+            // 自动关闭
+            setTimeout(function() {
+                box.style.display = "none";
+            }, duration);
+        }
+
+        function goodButton() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/like", true);
+            var formData = new FormData();
+            formData.append('btn', 'good'); // 添加数字类型数据
+            formData.append('path', currentImagePath); // 添加字符串类型数据
+            xhr.send(formData);
+            showMessage("点赞成功", 400);
+        }
+
+        function badButton() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/like", true);
+            var formData = new FormData();
+            formData.append('btn', 'bad'); // 添加数字类型数据
+            formData.append('path', currentImagePath); // 添加字符串类型数据
+            xhr.send(formData);
+            showMessage("点踩成功", 400);
+        }
+
+        function wrongButton() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/like", true);
+            var formData = new FormData();
+            formData.append('btn', 'wrong'); // 添加数字类型数据
+            formData.append('path', currentImagePath); // 添加字符串类型数据
+            xhr.send(formData);
+            showMessage("上报成功", 400);
+        }
 
         function previous() {
             if (currentImageIndex === 0) {

@@ -102,6 +102,17 @@ def pic():
         button = request.form['button']
         pic_path = request.form['pic_path']
         return render_template("pic.html")
+
+# 点赞路由
+@app.route("/like", methods=['POST'])
+def like():
+    number = request.form.get("btn")  # 获取数字类型数据
+    message = request.form.get("path")  # 获取字符串类型数据
+    
+    print(number)
+    print(message)
+    return "点赞成功"
+
 # 上传文件路由
 @app.route("/upload")
 def upload():
