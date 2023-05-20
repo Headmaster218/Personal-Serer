@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-21 02:28:44
+ * @LastEditTime: 2023-05-21 03:19:44
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -19,8 +19,9 @@
             background-image: url('/static/background.jpg');
             background-size: cover;
         }
-        
-        h3,p {
+
+        h3,
+        p {
             color: rgb(255, 255, 255);
             /* 设置颜色 */
         }
@@ -125,19 +126,19 @@
         }
 
         #floating-box {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        z-index: 9999;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 9999;
         }
 
         #floating-box p {
-        margin: 0;
+            margin: 0;
         }
     </style>
 </head>
@@ -152,9 +153,9 @@
     <button onclick="changeImage2NSFW()">切换高级版</button>
     <button onclick="changeImage2SFW()">切换普通版</button>
     {% endif %}
-    <button onclick="goodButton()" style="display:inline-block;">好看</button>
-    <button onclick="badButton()" style="display:inline-block;" color="red">不好看</button>
-    <button onclick="wrongButton()" style="display:inline-block;" color="red";>分类错了</button>
+    <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">好看</button>
+    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">不好看</button>
+    <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;" color="red" ;>分类错了</button>
     <p id="myImageText">第一张图片</p>
     <div id="floating-box">
         <p id="message"></p>
@@ -163,7 +164,7 @@
         <input type="range" min="50" max="200" value="100" id="zoom-slider">
     </div>
     <br>
-    
+
     <div class="image-container">
         <img src='{{ SFW_image_urls[0] }}' alt="第一张图片">
     </div>
@@ -205,7 +206,7 @@
 
             // 如果需要等比例缩放图片，并始终填充容器，请使用以下注释中提供的代码。
         });
-        
+
         function showMessage(message, duration) {
             var box = document.getElementById("floating-box");
             var msg = document.getElementById("message");
@@ -217,40 +218,30 @@
             box.style.display = "block";
 
             // 自动关闭
-            setTimeout(function() {
+            setTimeout(function () {
                 box.style.display = "none";
             }, duration);
         }
 
-        function goodButton() {
+        function sendRequest(btnValue) {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/like", true);
             var formData = new FormData();
-            formData.append('btn', '0'); // 添加数字类型数据
-            formData.append('path', currentImagePath); // 添加字符串类型数据
+            formData.append('btn', btnValue); // 添加数字类型数据
+            formData.append('path', images[currentImageIndex]); // 添加字符串类型数据
             xhr.send(formData);
-            showMessage("点赞成功", 400);
-        }
 
-        function badButton() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/like", true);
-            var formData = new FormData();
-            formData.append('btn', '1'); // 添加数字类型数据
-            formData.append('path', currentImagePath); // 添加字符串类型数据
-            xhr.send(formData);
-            showMessage("点踩成功", 400);
-        }
-
-        function wrongButton() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/like", true);
-            var formData = new FormData();
-            formData.append('btn', '2'); // 添加数字类型数据
-            formData.append('path', currentImagePath); // 添加字符串类型数据
-            xhr.send(formData);
-            showMessage("上报成功", 400);
-        }
+            if (btnValue == '0') {
+                showMessage("点赞成功", 400);
+            } else if (btnValue == '1') {
+                showMessage("点踩成功", 400);
+            } else {
+                showMessage("上报成功", 400);
+            }
+                xhr.onload = function() {
+                document.getElementById("Button"+btnValue).innerHTML = xhr.responseText+'人也觉得';
+            }
+         }
 
         function previous() {
             if (currentImageIndex === 0) {
@@ -275,23 +266,24 @@
         function updateImage() {
             var imgElement = document.querySelector("img");
             var txtElement = document.querySelector("#myImageText");
-            var imageUrl = images[currentImageIndex];
 
-            imgElement.setAttribute("src", imageUrl);
+            imgElement.setAttribute("src", images[currentImageIndex]);
             imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
             txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
-            currentImagePath = images[currentImageIndex];
-            document.setAttribute("pic_path").value = currentImagePath;
-            
+
+            document.getElementById("Button0").innerHTML = '好看';
+            document.getElementById("Button1").innerHTML = '不好看';
+            document.getElementById("Button2").innerHTML = '分类错了';
+
         }
 
         function changeImage2NSFW() {
-            images = {{ NSFW_image_urls| safe }};
+            images = {{ NSFW_image_urls | safe }};
             updateImage();
         }
 
         function changeImage2SFW() {
-            images = {{ SFW_image_urls| safe }};
+            images = {{ SFW_image_urls | safe }};
             updateImage();
         }
 

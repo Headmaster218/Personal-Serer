@@ -55,7 +55,8 @@ with open('data/likes/NSFW.json', 'r') as f:   # 打开一个JSON数据文件
 with open('data/likes/SFW.json', 'r') as f:   # 打开一个JSON数据文件
     file_data = f.read()                     # 读取文件内容
     SFW_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
-
+SFW_dict_op_times = 0
+NSFW_dict_op_times = 0
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -114,14 +115,25 @@ def pic():
 # 点赞路由
 @app.route("/like", methods=['POST'])
 def like():
+    global SFW_dict_op_times, NSFW_dict_op_times
     number = int(request.form.get("btn"))  # 获取数字类型数据
     message = request.form.get("path")  # 获取字符串类型数据
+    if(SFW_dict_op_times%5==0):
+        with open('data/likes/NSFW.json', 'w') as f:
+            json.dump(NSFW_imgs_dict, f)
+    if(NSFW_dict_op_times%5==0):
+        with open('data/likes/SFW.json', 'w') as f:
+            json.dump(SFW_imgs_dict, f)
+
     if message[:11] == '/static/SFW':
+        SFW_dict_op_times+=1
         SFW_imgs_dict[message[12:]][number] += 1
-        print(SFW_imgs_dict[message[12:]][number])
+        return str(SFW_imgs_dict[message[12:]][number])
     else:
+        NSFW_dict_op_times+=1
         NSFW_imgs_dict[message[13:]][number] += 1
-    return '1'
+        return str(NSFW_imgs_dict[message[13:]][number])
+
 
 # 上传文件路由
 @app.route("/upload")
