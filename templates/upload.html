@@ -1,3 +1,13 @@
+<!--
+ * @Author: Headmaster1615  e-mail:hm-218@qq.com
+ * @Date: 2023-05-15 23:50:30
+ * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
+ * @LastEditTime: 2023-05-21 00:15:32
+ * @FilePath: \个人服务器\templates\upload.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
+-->
 <!DOCTYPE html>
 <html>
 
@@ -87,10 +97,15 @@
 			alert("Upload failed. Please try again.");
 		};
 
+		xhr.onload = function() {
+		  alert(xhr.responseText);
+		};
+
 		// Prepare and send the FormData object
 		var formData = new FormData();
 		formData.append('file', files[0], files[0].name);
-		xhr.send(formData);
+		xhr.send(formData)
+		
 	}
 
 </script>

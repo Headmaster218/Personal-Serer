@@ -113,8 +113,8 @@ def upload_file():
     if file.filename == '':
         return 'No selected file'
     # Save uploaded file to disk
-    file.save('D:/Programing/Code/服务器/upload/' + file.filename)
-    return 'Upload completed'
+    file.save('D:/Programing/Code/个人服务器/upload/' + file.filename)
+    return '上传成功'
 
 
 if __name__ == '__main__':
