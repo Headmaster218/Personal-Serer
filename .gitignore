@@ -1,0 +1,10 @@
+ flask_session/
+ _pycache_/
+ 
+static/
+
+flask_session/
+
+upload/
+
+flask.log
