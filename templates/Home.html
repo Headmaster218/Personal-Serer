@@ -1,0 +1,112 @@
+<!--
+ * @Author: Headmaster1615  e-mail:hm-218@qq.com
+ * @Date: 2023-05-15 23:49:27
+ * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
+ * @LastEditTime: 2023-05-16 11:49:34
+ * @FilePath: \服务器\templates\Home.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>校长的主页</title>
+    <style>
+        h1,h2 {
+            color: rgb(255, 255, 255);
+            /* 设置颜色 */
+        }
+
+
+        body {
+            background-color: #000000;
+            padding: 0;
+            margin: 0;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        /* Center Container */
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Title */
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            width: 180px;
+            margin: 10px;
+            padding: 12px 24px;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .button-green {
+            background-color: #4CAF50;
+        }
+
+        .button-red {
+            background-color: #f44336ee;
+        }
+
+        .button-blue {
+            background-color: #008CBA;
+        }
+
+        .button-green:hover {
+            background-color: #3e8e41;
+        }
+
+        .button-red:hover {
+            background-color: #d32f2f;
+        }
+
+        .button-blue:hover {
+            background-color: #006d87;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {% if username == 1 %}
+        <h1>已获取完整访问权限，您是超级用户</h1>
+        {% else %}
+        <h1>您好，访客！</h1>
+        {% endif %}
+        <h2>此站全免流量，请放心使用</h2>
+        <div class="btn-container">
+            <button class="button-blue" onclick="location.href='{{ url_for('login') }}';">我要登录</button>
+            <button class="button-green" onclick="location.href='/pic'">图片查看器</button>
+            <button class="button-red" onclick="location.href='/upload'">上传文件给卓航</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!--
+ * @Author: Headmaster1615  e-mail:hm-218@qq.com
+ * @Date: 2023-05-15 11:55:24
+ * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
+ * @LastEditTime: 2023-05-19 10:35:01
+ * @FilePath: \服务器\templates\Pic.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>美图查看器</title>
+    <style>
+        body {
+            background-image: url('/static/background.jpg');
+            background-size: cover;
+        }
+        
+        h3,p {
+            color: rgb(255, 255, 255);
+            /* 设置颜色 */
+        }
+
+        /* 设置滑块容器样式 */
+        .slider-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        /* 图片容器样式 */
+        .image-container {
+            width: 100vw;
+            height: 90vh;
+            overflow: hidden;
+            /* 避免图像溢出 */
+            position: relative;
+        }
+
+        /* 图片样式 */
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            position: absolute;
+            /* 需要绝对定位，方便图片缩放 */
+            top: 0;
+            left: 0;
+            transform-origin: top left;
+            /* 指定变换原点为左上角 */
+        }
+
+        /* 滑块样式 */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            outline: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* 去掉滑块默认样式 */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+        }
+
+        /* 滑块拖动时改变图片缩放比例 */
+        input[type=range]:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px rgba(35, 173, 255, 0.5);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 5px;
+            background: #ddd;
+        }
+
+        input[type=range]::-moz-range-track {
+            height: 5px;
+            background: #ddd;
+        }
+
+        /* WebKit 中用于控制滑块外观的伪元素 */
+        input[type=range]::-webkit-slider-thumb:before,
+        input[type=range]::-webkit-slider-thumb:after {
+            display: block;
+            content: "";
+        }
+
+        /* 改变图片缩放比例 */
+        input[type=range]::-webkit-slider-thumb:before {
+            transform: scale(var(--thumb-scl, 1));
+            /* 根据滑块 value 值计算缩放比例 */
+            --thumb-scl: calc(var(--slider-value) / 100);
+        }
+
+        /* 给按钮设置背景色 */
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            /* 设置按钮内边距 */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            /* 设置按钮圆角 */
+        }
+
+        /* 悬浮时改变背景色 */
+        button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>高清图片加载较慢，长约3s</h3>
+    <button onclick="location.href='{{ url_for('Home') }}';">回到首页</button>
+    <button onclick="previous()">上一张图片</button>
+    <button onclick="next()">下一张图片</button>
+    <!-- 授权用户 -->
+    {% if username == 1 %}
+    <button onclick="changeImage2NSFW()">切换高级版</button>
+    <button onclick="changeImage2SFW()">切换普通版</button>
+    {% endif %}
+    <form action="{{ url_for('pic') }}" method="POST" style="display:inline-block;">
+        <input type="hidden" name="button" value="good">
+        <input type="hidden" name="pic_path" value=>
+        <button type="submit">赞</button>
+    </form>
+    <form action="{{ url_for('pic') }}" method="POST" style="display:inline-block;">
+        <input type="hidden" name="button" value="bad">
+        <input type="hidden" name="pic_path" value=>
+        <button type="submit">踩</button>
+    <form action="{{ url_for('pic') }}" method="POST">
+        <input type="hidden" name="button" value="wrong">
+        <input type="hidden" name="pic_path" value=>
+        <button type="submit">分类错误</button>
+    </form>
+    <p id="myImageText">第一张图片</p>
+    <div class="slider-container">
+        <input type="range" min="50" max="200" value="100" id="zoom-slider">
+    </div>
+    <br>
+    
+    <div class="image-container">
+        <img src='{{ SFW_image_urls[0] }}' alt="第一张图片">
+    </div>
+
+
+
+    <script>
+
+        var currentImageIndex = 0;
+        var images = {{ SFW_image_urls| safe }};
+        var currentImagePath = images[currentImageIndex];
+        // 获取相关元素
+        const slider = document.querySelector("#zoom-slider");
+        const image = document.querySelector(".image-container img");
+
+        // 设置滑块当前值（即初始值）
+        let sliderValue = slider.value;
+
+        // 监听滑块拖动事件，并根据 value 值改变图片缩放比例
+        slider.addEventListener("input", (e) => {
+            sliderValue = e.target.value;
+            image.style.transform = `scale(${sliderValue / 100})`;
+        });
+
+        // 监听窗口大小变化事件，重新设置滑块和图片大小
+        window.addEventListener("resize", () => {
+            // 计算图片容器的宽高比例
+            const aspectRatio = image.naturalWidth / image.naturalHeight;
+
+            // 设置滑块最小值、最大值和当前值（即初始值）
+            slider.min = Math.round(50 / aspectRatio);
+            slider.max = Math.round(200 / aspectRatio);
+            slider.value = sliderValue;
+
+            // 调整图片大小
+            image.style.width = "auto";
+            image.style.height = "auto";
+            image.style.transform = `scale(${sliderValue / 100})`;
+
+            // 如果需要等比例缩放图片，并始终填充容器，请使用以下注释中提供的代码。
+        });
+
+        function previous() {
+            if (currentImageIndex === 0) {
+                currentImageIndex = images.length - 1;
+            }
+            else {
+                currentImageIndex--;
+            }
+            updateImage();
+        }
+
+        function next() {
+            if (currentImageIndex === images.length - 1) {
+                currentImageIndex = 0;
+            }
+            else {
+                currentImageIndex++;
+            }
+            updateImage();
+        }
+
+        function updateImage() {
+            var imgElement = document.querySelector("img");
+            var txtElement = document.querySelector("#myImageText");
+            var imageUrl = images[currentImageIndex];
+
+            imgElement.setAttribute("src", imageUrl);
+            imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
+            txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
+            currentImagePath = images[currentImageIndex];
+            document.setAttribute("pic_path").value = currentImagePath;
+            
+        }
+
+        function changeImage2NSFW() {
+            images = {{ NSFW_image_urls| safe }};
+            updateImage();
+        }
+
+        function changeImage2SFW() {
+            images = {{ SFW_image_urls| safe }};
+            updateImage();
+        }
+
+    </script>
+</body>
+
+</html>
