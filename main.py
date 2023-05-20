@@ -47,6 +47,14 @@ for key in USERS:
     hashed_username[i] = bcrypt.hashpw(key.encode(), salt).decode()
     i+=1
 
+# 图片点赞信息存储在字典中[喜，踩，错]
+with open('data/likes/NSFW.json', 'r') as f:   # 打开一个JSON数据文件
+    file_data = f.read()                     # 读取文件内容
+    NSFW_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
+
+with open('data/likes/SFW.json', 'r') as f:   # 打开一个JSON数据文件
+    file_data = f.read()                     # 读取文件内容
+    SFW_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -106,12 +114,14 @@ def pic():
 # 点赞路由
 @app.route("/like", methods=['POST'])
 def like():
-    number = request.form.get("btn")  # 获取数字类型数据
+    number = int(request.form.get("btn"))  # 获取数字类型数据
     message = request.form.get("path")  # 获取字符串类型数据
-    
-    print(number)
-    print(message)
-    return "点赞成功"
+    if message[:11] == '/static/SFW':
+        SFW_imgs_dict[message[12:]][number] += 1
+        print(SFW_imgs_dict[message[12:]][number])
+    else:
+        NSFW_imgs_dict[message[13:]][number] += 1
+    return '1'
 
 # 上传文件路由
 @app.route("/upload")

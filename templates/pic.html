@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-21 01:36:09
+ * @LastEditTime: 2023-05-21 02:28:44
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -226,7 +226,7 @@
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/like", true);
             var formData = new FormData();
-            formData.append('btn', 'good'); // 添加数字类型数据
+            formData.append('btn', '0'); // 添加数字类型数据
             formData.append('path', currentImagePath); // 添加字符串类型数据
             xhr.send(formData);
             showMessage("点赞成功", 400);
@@ -236,7 +236,7 @@
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/like", true);
             var formData = new FormData();
-            formData.append('btn', 'bad'); // 添加数字类型数据
+            formData.append('btn', '1'); // 添加数字类型数据
             formData.append('path', currentImagePath); // 添加字符串类型数据
             xhr.send(formData);
             showMessage("点踩成功", 400);
@@ -246,7 +246,7 @@
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/like", true);
             var formData = new FormData();
-            formData.append('btn', 'wrong'); // 添加数字类型数据
+            formData.append('btn', '2'); // 添加数字类型数据
             formData.append('path', currentImagePath); // 添加字符串类型数据
             xhr.send(formData);
             showMessage("上报成功", 400);

@@ -8,3 +8,5 @@ flask_session/
 upload/
 
 flask.log
+
+data/

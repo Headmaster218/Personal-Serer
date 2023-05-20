@@ -2,8 +2,8 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 23:49:27
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-16 11:49:34
- * @FilePath: \服务器\templates\Home.html
+ * @LastEditTime: 2023-05-21 01:41:01
+ * @FilePath: \个人服务器\templates\Home.html
  * @Description: 
  * 
  * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
@@ -15,7 +15,16 @@
     <meta charset="UTF-8">
     <title>校长的主页</title>
     <style>
-        h1,h2 {
+        /* 定义彩虹标题的样式 */
+        h1 {
+            font-size: 5em;
+            background-image: linear-gradient(to right, red, orange, yellow, green, blue, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+		}
+        
+        h2 {
             color: rgb(255, 255, 255);
             /* 设置颜色 */
         }
@@ -98,7 +107,7 @@
         {% if username == 1 %}
         <h1>已获取完整访问权限，您是超级用户</h1>
         {% else %}
-        <h1>您好，访客！</h1>
+        <h2>您好，访客！</h2>
         {% endif %}
         <h2>此站全免流量，请放心使用</h2>
         <div class="btn-container">
