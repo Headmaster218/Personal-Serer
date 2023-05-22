@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-21 03:19:44
+ * @LastEditTime: 2023-05-22 08:13:08
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -135,6 +135,7 @@
             padding: 20px;
             border-radius: 5px;
             z-index: 9999;
+            display: none;
         }
 
         #floating-box p {
@@ -230,15 +231,14 @@
             formData.append('btn', btnValue); // 添加数字类型数据
             formData.append('path', images[currentImageIndex]); // 添加字符串类型数据
             xhr.send(formData);
-
-            if (btnValue == '0') {
+             xhr.onload = function() {
+                if (btnValue == '0') {
                 showMessage("点赞成功", 400);
             } else if (btnValue == '1') {
                 showMessage("点踩成功", 400);
             } else {
                 showMessage("上报成功", 400);
             }
-                xhr.onload = function() {
                 document.getElementById("Button"+btnValue).innerHTML = xhr.responseText+'人也觉得';
             }
          }
@@ -268,6 +268,7 @@
             var txtElement = document.querySelector("#myImageText");
 
             imgElement.setAttribute("src", images[currentImageIndex]);
+            showMessage("加载中,不要重复点击...", 450);
             imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
             txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
 
