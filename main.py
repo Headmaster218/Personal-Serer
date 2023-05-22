@@ -40,12 +40,6 @@ USERS = {
     '20205329': 'g1234567',
     'wjl_father': 'wjlismyson'
 }
-salt = bcrypt.gensalt()
-i=0
-hashed_username = [None] * len(USERS)
-for key in USERS:
-    hashed_username[i] = bcrypt.hashpw(key.encode(), salt).decode()
-    i+=1
 
 # 图片点赞信息存储在字典中[喜，踩，错]
 with open('data/likes/Npic.json', 'r') as f:   # 打开一个JSON数据文件
@@ -65,16 +59,25 @@ def login():
         password = request.form['password']
 
         if username in USERS and USERS[username] == password:
-            # 验证通过，创建 Session
-            session['username'] = bcrypt.hashpw(username.encode(), salt).decode()
-            return redirect(url_for('Home'))
+            if(session.get('wrong_times') != None and session['wrong_times'] < 10):
+                # 验证通过，创建 Session
+                session['username'] = username
+                app.logger.info(username+'登录成功')
+                return redirect(url_for('Home'))
         else:
-            # 验证失败，回到登录页并显示错误消息
-            error_msg = '用户名或密码错误'
+
+            # 验证失败
+            session.setdefault('wrong_times', 0)  # 使用setdefault函数初始化错误次数为0
+            session['wrong_times'] += 1
+            app.logger.warning(f"{request.remote_addr} 用户名或密码错误 {username} {password}")
+            error_msg = f"用户名或密码错误，已尝试{session['wrong_times']}次"
+            if session['wrong_times'] > 5:
+                error_msg += f"\n行为已记录，您的ip: {request.remote_addr}"
+            session['IP'] = request.remote_addr  # 不管验证是否成功，都应该记录用户IP
             return render_template('login.html', error_msg=error_msg)
 
     # 如果已登录，直接跳转到主页
-    if session.get('username')  in hashed_username:
+    if session.get('username')  in USERS:
         return redirect(url_for('Home'))
 
     return render_template('login.html')
@@ -82,7 +85,7 @@ def login():
 @app.route('/Home')
 def Home():
     # 如果未登录，返回登录页
-    if session.get('username') in hashed_username:
+    if session.get('username') in USERS:
         username=1
     else:
         username=0
@@ -99,7 +102,7 @@ def pic():
             img_url = url_for('static', filename='pic/' + os.path.basename(file_path))
             pic_image_urls.append(img_url)
             random.shuffle(pic_image_urls)
-        if session.get('username') in hashed_username:
+        if session.get('username') in USERS:
             with app.app_context():
                 username = 1
                 for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'Npic', '*.jpg')):
@@ -115,7 +118,7 @@ def pic():
 # 单独处理高级图片
 @app.route('/static/Npic/<string:subpath>')
 def path_handler(subpath):
-    if session.get('username') in hashed_username:
+    if session.get('username') in USERS:
         return send_file(r'D:\Programing\Code\个人服务器\static\Npic\\'+subpath)
     else:
         return redirect(url_for('login'))
