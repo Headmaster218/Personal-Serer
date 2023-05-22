@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from flask_session import Session
 from flask_sslify import SSLify
 import bcrypt
@@ -111,6 +111,15 @@ def pic():
         button = request.form['button']
         pic_path = request.form['pic_path']
         return render_template("pic.html")
+
+# 单独处理高级图片
+@app.route('/static/Npic/<string:subpath>')
+def path_handler(subpath):
+    if session.get('username') in hashed_username:
+        return send_file(r'D:\Programing\Code\个人服务器\static\Npic\\'+subpath)
+    else:
+        return redirect(url_for('login'))
+
 
 # 点赞路由
 @app.route("/like", methods=['POST'])

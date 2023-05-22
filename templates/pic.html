@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-22 08:13:08
+ * @LastEditTime: 2023-05-23 00:32:28
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -145,7 +145,7 @@
 </head>
 
 <body>
-    <h3>高清图片加载较慢，长约3s</h3>
+    <h3>高清图片加载较慢，长约3s，图片上方滑动条可以调节图片大小</h3>
     <button onclick="location.href='{{ url_for('Home') }}';">回到首页</button>
     <button onclick="previous()">上一张图片</button>
     <button onclick="next()">下一张图片</button>
@@ -268,7 +268,7 @@
             var txtElement = document.querySelector("#myImageText");
 
             imgElement.setAttribute("src", images[currentImageIndex]);
-            showMessage("加载中,不要重复点击...", 800);
+            showMessage("加载中,不要重复点击...", 1000);
             imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
             txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
 
@@ -279,14 +279,12 @@
         }
 
         function changeImage2Npic() {
-            images = {{ Npic_image_urls | safe }
-        };
+            images = {{ Npic_image_urls | safe }};
         updateImage();
         }
 
         function changeImage2pic() {
-            images = {{ pic_image_urls | safe }
-        };
+            images = {{ pic_image_urls | safe }};
         updateImage();
         }
 
