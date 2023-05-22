@@ -16,7 +16,7 @@
     <title>美图查看器</title>
     <style>
         body {
-            background-image: url('/static/background.jpg');
+            background-image: url('/static/pic_bgd.jpg');
             background-size: cover;
         }
 
@@ -151,8 +151,8 @@
     <button onclick="next()">下一张图片</button>
     <!-- 授权用户 -->
     {% if username == 1 %}
-    <button onclick="changeImage2NSFW()">切换高级版</button>
-    <button onclick="changeImage2SFW()">切换普通版</button>
+    <button onclick="changeImage2Npic()">切换高级版</button>
+    <button onclick="changeImage2pic()">切换普通版</button>
     {% endif %}
     <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">好看</button>
     <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">不好看</button>
@@ -167,7 +167,7 @@
     <br>
 
     <div class="image-container">
-        <img src='{{ SFW_image_urls[0] }}' alt="第一张图片">
+        <img src='{{ pic_image_urls[0] }}' alt="第一张图片">
     </div>
 
 
@@ -175,7 +175,7 @@
     <script>
 
         var currentImageIndex = 0;
-        var images = {{ SFW_image_urls| safe }};
+        var images = {{ pic_image_urls| safe }};
         var currentImagePath = images[currentImageIndex];
         // 获取相关元素
         const slider = document.querySelector("#zoom-slider");
@@ -231,17 +231,17 @@
             formData.append('btn', btnValue); // 添加数字类型数据
             formData.append('path', images[currentImageIndex]); // 添加字符串类型数据
             xhr.send(formData);
-             xhr.onload = function() {
+            xhr.onload = function () {
                 if (btnValue == '0') {
-                showMessage("点赞成功", 400);
-            } else if (btnValue == '1') {
-                showMessage("点踩成功", 400);
-            } else {
-                showMessage("上报成功", 400);
+                    showMessage("点赞成功", 400);
+                } else if (btnValue == '1') {
+                    showMessage("点踩成功", 400);
+                } else {
+                    showMessage("上报成功", 400);
+                }
+                document.getElementById("Button" + btnValue).innerHTML = xhr.responseText + '人也觉得';
             }
-                document.getElementById("Button"+btnValue).innerHTML = xhr.responseText+'人也觉得';
-            }
-         }
+        }
 
         function previous() {
             if (currentImageIndex === 0) {
@@ -268,7 +268,7 @@
             var txtElement = document.querySelector("#myImageText");
 
             imgElement.setAttribute("src", images[currentImageIndex]);
-            showMessage("加载中,不要重复点击...", 500);
+            showMessage("加载中,不要重复点击...", 800);
             imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
             txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
 
@@ -278,14 +278,16 @@
 
         }
 
-        function changeImage2NSFW() {
-            images = {{ NSFW_image_urls | safe }};
-            updateImage();
+        function changeImage2Npic() {
+            images = {{ Npic_image_urls | safe }
+        };
+        updateImage();
         }
 
-        function changeImage2SFW() {
-            images = {{ SFW_image_urls | safe }};
-            updateImage();
+        function changeImage2pic() {
+            images = {{ pic_image_urls | safe }
+        };
+        updateImage();
         }
 
     </script>

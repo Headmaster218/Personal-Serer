@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 23:49:27
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-21 01:41:01
+ * @LastEditTime: 2023-05-23 00:05:57
  * @FilePath: \个人服务器\templates\Home.html
  * @Description: 
  * 
@@ -22,8 +22,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
-		}
-        
+        }
+
         h2 {
             color: rgb(255, 255, 255);
             /* 设置颜色 */
@@ -109,7 +109,7 @@
         {% else %}
         <h2>您好，访客！</h2>
         {% endif %}
-        <h2>此站全免流量，请放心使用</h2>
+        <h1>此站全免流量，请放心使用</h1>
         <div class="btn-container">
             <button class="button-blue" onclick="location.href='{{ url_for('login') }}';">我要登录</button>
             <button class="button-green" onclick="location.href='/pic'">图片查看器</button>
@@ -118,4 +118,5 @@
     </div>
 
 </body>
+
 </html>

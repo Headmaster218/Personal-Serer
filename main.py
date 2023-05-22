@@ -48,15 +48,15 @@ for key in USERS:
     i+=1
 
 # 图片点赞信息存储在字典中[喜，踩，错]
-with open('data/likes/NSFW.json', 'r') as f:   # 打开一个JSON数据文件
+with open('data/likes/Npic.json', 'r') as f:   # 打开一个JSON数据文件
     file_data = f.read()                     # 读取文件内容
-    NSFW_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
+    Npic_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
 
-with open('data/likes/SFW.json', 'r') as f:   # 打开一个JSON数据文件
+with open('data/likes/pic.json', 'r') as f:   # 打开一个JSON数据文件
     file_data = f.read()                     # 读取文件内容
-    SFW_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
-SFW_dict_op_times = 0
-NSFW_dict_op_times = 0
+    pic_imgs_dict = json.loads(file_data)   # 将JSON格式数据解析为Python对象
+pic_dict_op_times = 0
+Npic_dict_op_times = 0
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -92,21 +92,21 @@ def Home():
 @app.route("/pic", methods=['GET', 'POST'])
 def pic():
     if request.method == 'GET':
-        SFW_image_urls = []
-        NSFW_image_urls = []
+        pic_image_urls = []
+        Npic_image_urls = []
         username = 0
-        for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'SFW', '*.jpg')):
-            img_url = url_for('static', filename='SFW/' + os.path.basename(file_path))
-            SFW_image_urls.append(img_url)
-            random.shuffle(SFW_image_urls)
+        for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'pic', '*.jpg')):
+            img_url = url_for('static', filename='pic/' + os.path.basename(file_path))
+            pic_image_urls.append(img_url)
+            random.shuffle(pic_image_urls)
         if session.get('username') in hashed_username:
             with app.app_context():
                 username = 1
-                for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'NSFW', '*.jpg')):
-                    img_url = url_for('static', filename='NSFW/' + os.path.basename(file_path))
-                    NSFW_image_urls.append(img_url)
-                    random.shuffle(NSFW_image_urls)
-        return render_template("pic.html", username=username, SFW_image_urls=SFW_image_urls, NSFW_image_urls=NSFW_image_urls)
+                for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'Npic', '*.jpg')):
+                    img_url = url_for('static', filename='Npic/' + os.path.basename(file_path))
+                    Npic_image_urls.append(img_url)
+                    random.shuffle(Npic_image_urls)
+        return render_template("pic.html", username=username, pic_image_urls=pic_image_urls, Npic_image_urls=Npic_image_urls)
     elif request.method == 'POST':
         button = request.form['button']
         pic_path = request.form['pic_path']
@@ -115,24 +115,24 @@ def pic():
 # 点赞路由
 @app.route("/like", methods=['POST'])
 def like():
-    global SFW_dict_op_times, NSFW_dict_op_times
+    global pic_dict_op_times, Npic_dict_op_times
     number = int(request.form.get("btn"))  # 获取数字类型数据
     message = request.form.get("path")  # 获取字符串类型数据
-    if(SFW_dict_op_times%5==0):
-        with open('data/likes/NSFW.json', 'w') as f:
-            json.dump(NSFW_imgs_dict, f)
-    if(NSFW_dict_op_times%5==0):
-        with open('data/likes/SFW.json', 'w') as f:
-            json.dump(SFW_imgs_dict, f)
+    if(pic_dict_op_times%5==0):
+        with open('data/likes/Npic.json', 'w') as f:
+            json.dump(Npic_imgs_dict, f)
+    if(Npic_dict_op_times%5==0):
+        with open('data/likes/pic.json', 'w') as f:
+            json.dump(pic_imgs_dict, f)
 
-    if message[:11] == '/static/SFW':
-        SFW_dict_op_times+=1
-        SFW_imgs_dict[message[12:]][number] += 1
-        return str(SFW_imgs_dict[message[12:]][number])
+    if message[:11] == '/static/pic':
+        pic_dict_op_times+=1
+        pic_imgs_dict[message[12:]][number] += 1
+        return str(pic_imgs_dict[message[12:]][number])
     else:
-        NSFW_dict_op_times+=1
-        NSFW_imgs_dict[message[13:]][number] += 1
-        return str(NSFW_imgs_dict[message[13:]][number])
+        Npic_dict_op_times+=1
+        Npic_imgs_dict[message[13:]][number] += 1
+        return str(Npic_imgs_dict[message[13:]][number])
 
 
 # 上传文件路由
