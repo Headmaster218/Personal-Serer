@@ -16,8 +16,8 @@ sslify = SSLify(app)
 # 设置日志记录等级
 app.logger.setLevel(logging.INFO)
 
-# 创建日志记录处理器，用于写入日志文件（每 1M 循环一次）
-handler = RotatingFileHandler('flask.log', maxBytes=1000000, backupCount=10)
+# 创建日志记录处理器，用于写入日志文件（每 10k 循环一次）
+handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=10)
 handler.setLevel(logging.INFO)
 
 # 定义日志记录格式
@@ -33,13 +33,9 @@ app.config['SESSION_TYPE'] = 'filesystem'  # Session 存储方式
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10) # Session 的有效期
 Session(app)
 
-# 用户信息存储在字典中
-USERS = {
-    'Headmaster': 'Wzh021013',
-    '20205482': '123qwe',
-    '20205329': 'g1234567',
-    'wjl_father': 'wjlismyson'
-}
+with open('data/USERS.json', 'r') as f:
+    file_data = f.read()
+    USERS = json.loads(file_data)
 
 # 图片点赞信息存储在字典中[喜，踩，错]
 with open('data/likes/Npic.json', 'r') as f:   # 打开一个JSON数据文件
@@ -59,13 +55,12 @@ def login():
         password = request.form['password']
 
         if username in USERS and USERS[username] == password:
-            if(session.get('wrong_times') != None and session['wrong_times'] < 10):
+            if(session.get('wrong_times') == None or session['wrong_times'] < 10):
                 # 验证通过，创建 Session
                 session['username'] = username
                 app.logger.info(username+'登录成功')
                 return redirect(url_for('Home'))
         else:
-
             # 验证失败
             session.setdefault('wrong_times', 0)  # 使用setdefault函数初始化错误次数为0
             session['wrong_times'] += 1
@@ -75,11 +70,10 @@ def login():
                 error_msg += f"\n行为已记录，您的ip: {request.remote_addr}"
             session['IP'] = request.remote_addr  # 不管验证是否成功，都应该记录用户IP
             return render_template('login.html', error_msg=error_msg)
-
+    # elif request.method==('GET'):
     # 如果已登录，直接跳转到主页
-    if session.get('username')  in USERS:
+    if session.get('username') in USERS:
         return redirect(url_for('Home'))
-
     return render_template('login.html')
 
 @app.route('/Home')
