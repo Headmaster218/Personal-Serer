@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-23 00:38:32
+ * @LastEditTime: 2023-05-23 22:41:38
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -218,9 +218,12 @@
             box.style.display = "block";
 
             // 自动关闭
+            if(duration!=0)
+            {
             setTimeout(function () {
                 box.style.display = "none";
             }, duration);
+        }
         }
 
         function sendRequest(btnValue) {
@@ -267,13 +270,17 @@
             var txtElement = document.querySelector("#myImageText");
 
             imgElement.setAttribute("src", images[currentImageIndex]);
-            showMessage("加载中,不要重复点击...", 1000);
+            showMessage("加载中,不要重复点击...", 0);
+            // 监听图片加载事件
+            imgElement.addEventListener('load', function() {
+            // 图片加载完成后执行以下代码
+            document.getElementById("floating-box").style.display = 'none';
             imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
             txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
-
             document.getElementById("Button0").innerHTML = '好看';
             document.getElementById("Button1").innerHTML = '不好看';
             document.getElementById("Button2").innerHTML = '分类错了';
+            });
 
         }
 
