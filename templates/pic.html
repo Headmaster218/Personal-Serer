@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-23 22:41:38
+ * @LastEditTime: 2023-05-27 11:02:24
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -145,7 +145,7 @@
 </head>
 
 <body>
-    <h3>高清图片加载较慢，长约3s，图片上方滑动条可以调节图片大小</h3>
+    <h3>高清图片右键保存，拖动滑动条调节图片大小，推荐点击评价按钮，站长会对图片做出调整</h3>
     <button onclick="location.href='{{ url_for('Home') }}';">回到首页</button>
     <button onclick="previous()">上一张图片</button>
     <button onclick="next()">下一张图片</button>
@@ -157,7 +157,7 @@
     <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">好看</button>
     <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">不好看</button>
     <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;" color="red" ;>分类错了</button>
-    <p id="myImageText">第一张图片</p>
+    <p id="myImageText">1/1742</p>
     <div id="floating-box">
         <p id="message"></p>
     </div>
@@ -167,7 +167,7 @@
     <br>
 
     <div class="image-container">
-        <img src='{{ pic_image_urls[0] }}' alt="第一张图片">
+        <img src='{{ pic_image_urls[0] }}' alt="1/1742">
     </div>
 </body>
 
@@ -275,8 +275,8 @@
             imgElement.addEventListener('load', function() {
             // 图片加载完成后执行以下代码
             document.getElementById("floating-box").style.display = 'none';
-            imgElement.setAttribute("alt", "第" + (currentImageIndex + 1) + "张图片");
-            txtElement.textContent = "第" + (currentImageIndex + 1) + "张图片";
+            imgElement.setAttribute("alt", (currentImageIndex + 1)+"/"+ (images.length+1));
+            txtElement.textContent = (currentImageIndex + 1)+"/"+ (images.length+1);
             document.getElementById("Button0").innerHTML = '好看';
             document.getElementById("Button1").innerHTML = '不好看';
             document.getElementById("Button2").innerHTML = '分类错了';
