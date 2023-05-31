@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from flask_session import Session
 from flask_sslify import SSLify
-import bcrypt
 from datetime import timedelta
 import logging
 from logging.handlers import RotatingFileHandler
@@ -30,7 +29,7 @@ app.logger.addHandler(handler)
 app.config['STATIC_FOLDER'] = os.path.join(os.getcwd(), 'static')
 app.config['SECRET_KEY'] = 'asdb2[[/*$9)(/XSwncuwah#(&bcelu'  # Session 密钥
 app.config['SESSION_TYPE'] = 'filesystem'  # Session 存储方式
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10) # Session 的有效期
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # Session 的有效期
 Session(app)
 
 with open('data/USERS.json', 'r') as f:
@@ -104,9 +103,8 @@ def pic():
                     Npic_image_urls.append(img_url)
                     random.shuffle(Npic_image_urls)
         return render_template("pic.html", username=username, pic_image_urls=pic_image_urls, Npic_image_urls=Npic_image_urls)
+    #预留上传图片功能
     elif request.method == 'POST':
-        button = request.form['button']
-        pic_path = request.form['pic_path']
         return render_template("pic.html")
 
 # 单独处理高级图片
@@ -115,7 +113,7 @@ def path_handler(subpath):
     if session.get('username') in USERS:
         return send_file(r'D:\Programing\Code\个人服务器\static\Npic\\'+subpath)
     else:
-        return redirect(url_for('login'))
+        return render_template('login.html')
 
 
 # 点赞路由

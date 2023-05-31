@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-27 11:02:24
+ * @LastEditTime: 2023-05-31 19:07:28
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -265,6 +265,7 @@
             updateImage();
         }
 
+
         function updateImage() {
             var imgElement = document.querySelector("img");
             var txtElement = document.querySelector("#myImageText");
@@ -281,7 +282,10 @@
             document.getElementById("Button1").innerHTML = '不好看';
             document.getElementById("Button2").innerHTML = '分类错了';
             });
-
+            // 监听图片加载失败事件,未登录时跳转到登录页面
+            imgElement.addEventListener('error', function() {
+                window.location.href = images[currentImageIndex];
+            });
         }
 
         function changeImage2Npic() {
