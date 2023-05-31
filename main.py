@@ -94,14 +94,14 @@ def pic():
         for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'pic', '*.jpg')):
             img_url = url_for('static', filename='pic/' + os.path.basename(file_path))
             pic_image_urls.append(img_url)
-            random.shuffle(pic_image_urls)
+        random.shuffle(pic_image_urls)
         if session.get('username') in USERS:
             with app.app_context():
                 username = 1
                 for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'Npic', '*.jpg')):
                     img_url = url_for('static', filename='Npic/' + os.path.basename(file_path))
                     Npic_image_urls.append(img_url)
-                    random.shuffle(Npic_image_urls)
+                random.shuffle(Npic_image_urls)
         return render_template("pic.html", username=username, pic_image_urls=pic_image_urls, Npic_image_urls=Npic_image_urls)
     #预留上传图片功能
     elif request.method == 'POST':
