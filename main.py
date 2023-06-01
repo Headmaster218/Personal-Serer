@@ -75,6 +75,14 @@ def login():
         return redirect(url_for('Home'))
     return render_template('login.html')
 
+# 登出路由
+@app.route('/logout')
+def logout():
+    # 删除 Session
+    session.pop('username', None)
+    return redirect(url_for('Home'))
+
+
 @app.route('/Home')
 def Home():
     # 如果未登录，返回登录页
@@ -83,6 +91,30 @@ def Home():
     else:
         username=0
     return render_template('Home.html', username=username)
+
+# 视频播放器路由
+@app.route("/video", methods=['GET', 'POST'])
+def video():
+    if request.method == 'GET':
+        video_urls = [r'static/example.mp4']
+        if session.get('username') in USERS:
+            with app.app_context():
+                for file_path in glob.glob('D:/HTML/Zzz/double/*.mp4'):
+                    video_url = url_for('static', filename='video/' + os.path.basename(file_path))
+                    video_urls.append(video_url)
+        return render_template("video.html", video_urls=video_urls)
+    # 预留上传视频功能
+    elif request.method == 'POST':
+        return render_template("video.html")
+
+# 单独处理高级视频
+@app.route('/static/video/<string:subpath>')
+def video_handler(subpath):
+    if session.get('username') in USERS:
+        path = r'D:\HTML\Zzz\double\\'+subpath
+        return send_file(path)
+    else:
+        return render_template('login.html')
 
 # 图片路由
 @app.route("/pic", methods=['GET', 'POST'])
@@ -109,7 +141,7 @@ def pic():
 
 # 单独处理高级图片
 @app.route('/static/Npic/<string:subpath>')
-def path_handler(subpath):
+def Npic_handler(subpath):
     if session.get('username') in USERS:
         return send_file(r'D:\Programing\Code\个人服务器\static\Npic\\'+subpath)
     else:

@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-31 19:07:28
+ * @LastEditTime: 2023-05-31 20:06:09
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -147,15 +147,15 @@
 <body>
     <h3>高清图片右键保存，拖动滑动条调节图片大小，推荐点击评价按钮，站长会对图片做出调整</h3>
     <button onclick="location.href='{{ url_for('Home') }}';">回到首页</button>
-    <button onclick="previous()">上一张图片</button>
-    <button onclick="next()">下一张图片</button>
+    <button onclick="previous()">上一张</button>
+    <button onclick="next()">下一张</button>
     <!-- 授权用户 -->
     {% if username == 1 %}
     <button onclick="changeImage2Npic()">切换高级版</button>
     <button onclick="changeImage2pic()">切换普通版</button>
     {% endif %}
-    <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">好看</button>
-    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">不好看</button>
+    <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">👍</button>
+    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">👎</button>
     <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;" color="red" ;>分类错了</button>
     <p id="myImageText">1/1742</p>
     <div id="floating-box">
@@ -278,8 +278,8 @@
             document.getElementById("floating-box").style.display = 'none';
             imgElement.setAttribute("alt", (currentImageIndex + 1)+"/"+ (images.length+1));
             txtElement.textContent = (currentImageIndex + 1)+"/"+ (images.length+1);
-            document.getElementById("Button0").innerHTML = '好看';
-            document.getElementById("Button1").innerHTML = '不好看';
+            document.getElementById("Button0").innerHTML = '👍';
+            document.getElementById("Button1").innerHTML = '👎';
             document.getElementById("Button2").innerHTML = '分类错了';
             });
             // 监听图片加载失败事件,未登录时跳转到登录页面

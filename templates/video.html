@@ -1,0 +1,256 @@
+<!--
+ * @Author: Headmaster1615  e-mail:hm-218@qq.com
+ * @Date: 2023-05-31 19:43:12
+ * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
+ * @LastEditTime: 2023-06-01 10:37:01
+ * @FilePath: \个人服务器\templates\video.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Headmaster1615, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>视频播放器</title>
+    <meta charset="utf-8">
+    <style>
+        /* 视频容器，根据屏幕宽度自动调整高度 */
+        .video-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 宽高比为16:9时的值 */
+  overflow: hidden;
+  position: relative;
+  display: flex; /* 添加flex布局 */
+  justify-content: center; /* 沿水平居中对齐 */
+  align-items: center; /* 沿垂直居中对齐 */
+}
+        /* 视频元素，最大限度填充父容器 */
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 填充方式：等比缩放并裁剪 */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        body {
+            background-image: url('/static/pic_bgd.jpg');
+            background-size: cover;
+        }
+
+        h3,
+        p {
+            color: rgb(255, 255, 255);
+            /* 设置颜色 */
+        }
+
+        /* 设置滑块容器样式 */
+        .slider-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+
+        /* 滑块样式 */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            outline: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* 去掉滑块默认样式 */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+        }
+
+        /* 滑块拖动时改变图片缩放比例 */
+        input[type=range]:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px rgba(35, 173, 255, 0.5);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 5px;
+            background: #ddd;
+        }
+
+        input[type=range]::-moz-range-track {
+            height: 5px;
+            background: #ddd;
+        }
+
+        /* WebKit 中用于控制滑块外观的伪元素 */
+        input[type=range]::-webkit-slider-thumb:before,
+        input[type=range]::-webkit-slider-thumb:after {
+            display: block;
+            content: "";
+        }
+
+        /* 改变图片缩放比例 */
+        input[type=range]::-webkit-slider-thumb:before {
+            transform: scale(var(--thumb-scl, 1));
+            /* 根据滑块 value 值计算缩放比例 */
+            --thumb-scl: calc(var(--slider-value) / 100);
+        }
+
+        /* 给按钮设置背景色 */
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            /* 设置按钮内边距 */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            /* 设置按钮圆角 */
+        }
+
+        /* 悬浮时改变背景色 */
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        #floating-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            display: none;
+        }
+
+        #floating-box p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h3>推荐点击评价按钮，站长会对图片做出调整</h3>
+    <button onclick="location.href='{{ url_for('Home') }}';">回到首页</button>
+    <button onclick="previous()">上一个</button>
+    <button onclick="next()">下一个</button>
+    <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">👍</button>
+    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">👎</button>
+    <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;" color="red" ;>分类错了</button>
+    <p id="myvideoText">1/?点一下 下一个 就知道了</p>
+    <div id="floating-box">
+        <p id="message"></p>
+    </div>
+    <br>
+    <!-- 视频容器 -->
+    <div class="video-container">
+        <video controls preload="metadata">
+            <source src="static/example.mp4" type="video/mp4">
+            <p>Your browser doesn't support HTML5 video. Here is a <a href="static/example.mp4">link to the video</a> instead.</p>
+        </video>
+    </div>
+</body>
+
+<script>
+
+    var currentvideoIndex = 0;
+    var videos = {{ video_urls| safe }};
+    var currentvideoPath = videos[currentvideoIndex];
+
+    // 获取相关元素
+    const video = document.querySelector(".video-container vidoe");
+
+    function showMessage(message, duration) {
+        var box = document.getElementById("floating-box");
+        var msg = document.getElementById("message");
+
+        // 显示消息
+        msg.innerHTML = message;
+
+        // 显示提示框
+        box.style.display = "block";
+
+        // 自动关闭
+        if(duration!=0)
+        {
+        setTimeout(function () {
+            box.style.display = "none";
+        }, duration);
+    }
+    }
+
+    function sendRequest(btnValue) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/like", true);
+        var formData = new FormData();
+        formData.append('btn', btnValue); // 添加数字类型数据
+        formData.append('path', videos[currentvideoIndex]); // 添加字符串类型数据
+        xhr.send(formData);
+        xhr.onload = function () {
+            if (btnValue == '0') {
+                showMessage("点赞成功", 400);
+            } else if (btnValue == '1') {
+                showMessage("点踩成功", 400);
+            } else {
+                showMessage("上报成功", 400);
+            }
+            document.getElementById("Button" + btnValue).innerHTML = xhr.responseText + '人也觉得';
+        }
+    }
+
+    function previous() {
+        if (currentvideoIndex === 0) {
+            currentvideoIndex = videos.length - 1;
+        }
+        else {
+            currentvideoIndex--;
+        }
+        updatevideo();
+    }
+
+    function next() {
+        if (currentvideoIndex === videos.length - 1) {
+            currentvideoIndex = 0;
+        }
+        else {
+            currentvideoIndex++;
+        }
+        updatevideo();
+    }
+
+
+    function updatevideo() {
+        var videoElement = document.querySelector("video");
+        var txtElement = document.querySelector("#myvideoText");
+
+        videoElement.setAttribute("src", videos[currentvideoIndex]);
+        var str = decodeURIComponent(videos[currentvideoIndex]);
+        var index = str.lastIndexOf("/");
+        txtElement.textContent = (currentvideoIndex + 1)+"/"+ (videos.length) +' '+ str.substr(index + 1);
+        document.getElementById("Button0").innerHTML = '👍';
+        document.getElementById("Button1").innerHTML = '👎';
+        document.getElementById("Button2").innerHTML = '分类错了';
+        // 监听图片加载失败事件,未登录时跳转到登录页面
+        videoElement.addEventListener('error', function() {
+            location.href='/';
+        });
+    }
+
+</script>
+
+
+</html>

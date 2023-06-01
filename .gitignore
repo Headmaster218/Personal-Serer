@@ -10,3 +10,5 @@ upload/
 flask.log
 
 data/
+
+flask.*

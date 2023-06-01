@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 23:49:27
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-23 00:39:54
+ * @LastEditTime: 2023-06-01 10:26:45
  * @FilePath: \个人服务器\templates\Home.html
  * @Description: 
  * 
@@ -88,16 +88,32 @@
             background-color: #008CBA;
         }
 
+        .button-purple {
+            background-color: #673ab7;
+        }
+        
+        .button-yellow {
+            background-color: #d1ca40;
+        }
+
         .button-green:hover {
             background-color: #3e8e41;
         }
 
+        .button-yellow:hover {
+            background-color: #a59f2f;
+        }
+
         .button-red:hover {
-            background-color: #d32f2f;
+            background-color: #a32424;
         }
 
         .button-blue:hover {
             background-color: #006d87;
+        }
+
+        .button-purple:hover {
+            background-color: #5a2d8a;
         }
     </style>
 </head>
@@ -110,13 +126,29 @@
         <h2>您好，访客！</h2>
         {% endif %}
         <h1>此站全免流量，请放心使用</h1>
+        <div class="btn-condainer">
+            <button class="button-green" onclick="location.href='/';">我要登录</button>
+            <button class="button-red" onclick="log_out()">退出登录</button>
+        </div>
+
         <div class="btn-container">
-            <button class="button-blue" onclick="location.href='/';">我要登录</button>
-            <button class="button-green" onclick="location.href='/pic'">图片查看器</button>
-            <button class="button-red" onclick="location.href='/upload'">上传文件给卓航</button>
+            <button class="button-purple" onclick="location.href='/pic'">图片查看器</button>
+            <button class="button-blue" onclick="location.href='/upload'">上传文件给卓航</button>
+            <button class="button-yellow" onclick="location.href='/video'">视频播放器</button>
         </div>
     </div>
 
 </body>
+
+<script>
+    function log_out() {
+        if (confirm("确定要退出登录吗？")) {
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("GET", "/logout", true);
+            // xhr.send();
+            location.href = "/logout";
+        }
+    }
+</script>
 
 </html>
