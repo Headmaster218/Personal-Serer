@@ -47,6 +47,7 @@ with open('data/likes/pic.json', 'r') as f:   # 打开一个JSON数据文件
 pic_dict_op_times = 0
 Npic_dict_op_times = 0
 
+# 登录路由
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -75,6 +76,11 @@ def login():
         return redirect(url_for('Home'))
     return render_template('login.html')
 
+# 图标路由
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('static/favicon.ico')
+
 # 登出路由
 @app.route('/logout')
 def logout():
@@ -82,7 +88,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('Home'))
 
-
+# 主页路由
 @app.route('/Home')
 def Home():
     # 如果未登录，返回登录页
@@ -147,8 +153,7 @@ def Npic_handler(subpath):
     else:
         return render_template('login.html')
 
-
-# 点赞路由
+# 图片点赞路由
 @app.route("/like", methods=['POST'])
 def like():
     global pic_dict_op_times, Npic_dict_op_times
