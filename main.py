@@ -191,5 +191,5 @@ def upload():
 
 
 if __name__ == '__main__':
-    context = ('.\cert.pem', '.\key.pem')
+    context = ('.data\pem\cert.pem', '.data\pem\key.pem')
     app.run(host='172.20.35.15', port=443, ssl_context=context)
