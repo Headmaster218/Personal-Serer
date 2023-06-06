@@ -47,6 +47,18 @@ with open('data/likes/pic.json', 'r') as f:   # 打开一个JSON数据文件
 pic_dict_op_times = 0
 Npic_dict_op_times = 0
 
+
+#获取指定路径下的文件名（不含路径）并返回到一个列表中。
+def get_file_names(path_list):
+    file_names = []
+    for path in path_list:
+        temp_file_names = [file_path[8:] for file_path in glob.glob(path)]
+        file_names.extend(temp_file_names)
+    return file_names
+
+Spic_urls = get_file_names(['D:/HTML/SFW/国内/*.jpg', 'D:/HTML/SFW/欧美/*.jpg', 'D:/HTML/SFW/大哥/*.jpg'])
+Npic_urls = get_file_names(['D:/HTML/NSFW/国内/*.jpg', 'D:/HTML/NSFW/欧美/*.jpg', 'D:/HTML/NSFW/大哥/*.jpg'])
+
 # 登录路由
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -123,36 +135,31 @@ def video_handler(subpath):
     else:
         return render_template('login.html')
 
-# 图片路由
+# 图片首页路由
 @app.route("/pic", methods=['GET', 'POST'])
 def pic():
     if request.method == 'GET':
-        pic_image_urls = []
-        Npic_image_urls = []
         username = 0
-        for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'pic', '*.jpg')):
-            img_url = url_for('static', filename='pic/' + os.path.basename(file_path))
-            pic_image_urls.append(img_url)
-        random.shuffle(pic_image_urls)
+        random.shuffle(Spic_urls)
+        Npic_image_urls = Spic_urls
         if session.get('username') in USERS:
-            with app.app_context():
-                username = 1
-                for file_path in glob.glob(os.path.join(app.config['STATIC_FOLDER'], 'Npic', '*.jpg')):
-                    img_url = url_for('static', filename='Npic/' + os.path.basename(file_path))
-                    Npic_image_urls.append(img_url)
-                random.shuffle(Npic_image_urls)
-        return render_template("pic.html", username=username, pic_image_urls=pic_image_urls, Npic_image_urls=Npic_image_urls)
+            username = 1
+            random.shuffle(Npic_urls)
+            Npic_image_urls = Npic_urls
+        return render_template("pic.html", username=username, pic_image_urls=Spic_urls, Npic_image_urls=Npic_image_urls)
     #预留上传图片功能
     elif request.method == 'POST':
         return render_template("pic.html")
 
-# 单独处理高级图片
-@app.route('/static/Npic/<string:subpath>')
-def Npic_handler(subpath):
-    if session.get('username') in USERS:
-        return send_file(r'D:\Programing\Code\个人服务器\static\Npic\\'+subpath)
-    else:
-        return render_template('login.html')
+# 图片解析
+@app.route('/pic_src/<path:subpath>')
+def pic_handler(subpath):
+    if subpath[:3] == "NSF":
+        if session.get('username') in USERS:
+           return send_file(r'D:/HTML/'+subpath)
+        else:
+            return render_template('login.html')
+    return send_file(r'D:/HTML/'+subpath)
 
 # 图片点赞路由
 @app.route("/like", methods=['POST'])
@@ -176,7 +183,6 @@ def like():
         Npic_imgs_dict[message[13:]][number] += 1
         return str(Npic_imgs_dict[message[13:]][number])
 
-
 # 上传文件路由
 @app.route("/upload", methods=['GET', 'POST'])
 def upload():
@@ -191,5 +197,5 @@ def upload():
 
 
 if __name__ == '__main__':
-    context = ('.data\pem\cert.pem', '.data\pem\key.pem')
+    context = ('data\pem\cert.pem', 'data\pem\key.pem')
     app.run(host='172.20.35.15', port=443, ssl_context=context)

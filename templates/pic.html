@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-31 20:06:09
+ * @LastEditTime: 2023-06-06 10:03:07
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -167,7 +167,7 @@
     <br>
 
     <div class="image-container">
-        <img src='{{ pic_image_urls[0] }}' alt="1/1742">
+        <img src='{{ "/pic_src/" + pic_image_urls[0] }}' alt="1/1742">
     </div>
 </body>
 
@@ -270,7 +270,7 @@
             var imgElement = document.querySelector("img");
             var txtElement = document.querySelector("#myImageText");
 
-            imgElement.setAttribute("src", images[currentImageIndex]);
+            imgElement.setAttribute("src","/pic_src/" + images[currentImageIndex]);
             showMessage("加载中,不要重复点击...", 0);
             // 监听图片加载事件
             imgElement.addEventListener('load', function() {
@@ -284,7 +284,7 @@
             });
             // 监听图片加载失败事件,未登录时跳转到登录页面
             imgElement.addEventListener('error', function() {
-                window.location.href = images[currentImageIndex];
+                window.location.href ="/pic_src/" + images[currentImageIndex];
             });
         }
 
