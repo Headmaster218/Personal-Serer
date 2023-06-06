@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-31 19:43:12
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-06-01 10:37:01
+ * @LastEditTime: 2023-06-06 10:34:48
  * @FilePath: \个人服务器\templates\video.html
  * @Description: 
  * 
@@ -160,6 +160,7 @@
     <div class="video-container">
         <video controls preload="metadata">
             <source src="static/example.mp4" type="video/mp4">
+            <source src="static/example.mkv" type="video/x-matroska">
             <p>Your browser doesn't support HTML5 video. Here is a <a href="static/example.mp4">link to the video</a> instead.</p>
         </video>
     </div>
@@ -213,22 +214,18 @@
     }
 
     function previous() {
-        if (currentvideoIndex === 0) {
+        if (currentvideoIndex === 0)
             currentvideoIndex = videos.length - 1;
-        }
-        else {
+        else 
             currentvideoIndex--;
-        }
         updatevideo();
     }
 
     function next() {
-        if (currentvideoIndex === videos.length - 1) {
+        if (currentvideoIndex === videos.length - 1)
             currentvideoIndex = 0;
-        }
-        else {
+        else
             currentvideoIndex++;
-        }
         updatevideo();
     }
 
@@ -240,13 +237,15 @@
         videoElement.setAttribute("src", videos[currentvideoIndex]);
         var str = decodeURIComponent(videos[currentvideoIndex]);
         var index = str.lastIndexOf("/");
-        txtElement.textContent = (currentvideoIndex + 1)+"/"+ (videos.length);// +' '+ str.substr(index + 1);
+        txtElement.textContent = (currentvideoIndex + 1)+"/"+ (videos.length);
         document.getElementById("Button0").innerHTML = '👍';
         document.getElementById("Button1").innerHTML = '👎';
         document.getElementById("Button2").innerHTML = '分类错了';
         // 监听图片加载失败事件,未登录时跳转到登录页面
-        videoElement.addEventListener('error', function() {
-            location.href='/';
+        videoElement.addEventListener('error', function() 
+        {
+            if(confirm("您似乎未登录，要跳转登录界面吗？"))
+                location.href='/';
         });
     }
 

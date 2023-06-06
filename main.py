@@ -115,7 +115,6 @@ def Home():
 def video():
     if request.method == 'GET':
         video_urls = [r'static/example.mp4']
-        # video_urls.append(url_for(r'P:/阿凡达2.mkv'))
         if session.get('username') in USERS:
             with app.app_context():
                 for file_path in glob.glob('D:/HTML/Zzz/double/*.mp4'):
@@ -129,9 +128,10 @@ def video():
 # 单独处理高级视频
 @app.route('/static/video/<string:subpath>')
 def video_handler(subpath):
+    # return send_file(r'P:/阿凡达2.mkv', as_attachment=False)
     if session.get('username') in USERS:
         path = r'D:\HTML\Zzz\double\\'+subpath
-        return send_file(path)
+        return send_file(path, as_attachment=False)
     else:
         return render_template('login.html')
 
