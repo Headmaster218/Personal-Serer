@@ -240,7 +240,7 @@
         videoElement.setAttribute("src", videos[currentvideoIndex]);
         var str = decodeURIComponent(videos[currentvideoIndex]);
         var index = str.lastIndexOf("/");
-        txtElement.textContent = (currentvideoIndex + 1)+"/"+ (videos.length) +' '+ str.substr(index + 1);
+        txtElement.textContent = (currentvideoIndex + 1)+"/"+ (videos.length);// +' '+ str.substr(index + 1);
         document.getElementById("Button0").innerHTML = '👍';
         document.getElementById("Button1").innerHTML = '👎';
         document.getElementById("Button2").innerHTML = '分类错了';

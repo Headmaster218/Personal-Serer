@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 23:50:30
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-05-23 00:41:50
+ * @LastEditTime: 2023-06-06 08:14:06
  * @FilePath: \个人服务器\templates\upload.html
  * @Description: 
  * 
@@ -75,17 +75,15 @@
 
 <body>
 	<h1>给卓航上传一些有趣的文件吧</h1>
-	<button onclick="location.href='{{ url_for('Home') }}';" class="button">回到首页</button>
-	<form action="/upload-file" method="post" enctype="multipart/form-data">
+	<button onclick="location.href='/Home';" class="button">回到首页</button>
+	<!-- <form action="/upload-file" method="post" enctype="multipart/form-data"> -->
 		<label for="file" ;>请选择要上传的文件：</label>
 		<input type="file" name="file" id="file-upload">
 		<button onclick="uploadFile()" type="button" class="button">上传</button>
-	</form>
+	<!-- </form> -->
 	<div class="progress-container">
-		<!-- <div class="progress-bar"></div> -->
 		<div class="percent">上传进度：</div>
 	</div>
-	<script type="text/javascript" src="upload.js"></script>
 </body>
 
 </html>
@@ -104,7 +102,7 @@
 
 		// Create and open a new XMLHttpRequest object
 		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/upload-file', true);
+		xhr.open('POST', '/upload', true);
 
 		// Upload progress listener
 		xhr.upload.onprogress = function (event) {

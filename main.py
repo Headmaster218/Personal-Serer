@@ -16,7 +16,7 @@ sslify = SSLify(app)
 app.logger.setLevel(logging.INFO)
 
 # 创建日志记录处理器，用于写入日志文件（每 10k 循环一次）
-handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=10)
+handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=0)
 handler.setLevel(logging.INFO)
 
 # 定义日志记录格式
@@ -103,6 +103,7 @@ def Home():
 def video():
     if request.method == 'GET':
         video_urls = [r'static/example.mp4']
+        # video_urls.append(url_for(r'P:/阿凡达2.mkv'))
         if session.get('username') in USERS:
             with app.app_context():
                 for file_path in glob.glob('D:/HTML/Zzz/double/*.mp4'):
@@ -177,12 +178,10 @@ def like():
 
 
 # 上传文件路由
-@app.route("/upload")
+@app.route("/upload", methods=['GET', 'POST'])
 def upload():
-    return render_template("upload.html")
-
-@app.route('/upload-file', methods=['POST'])
-def upload_file():
+    if request.method == 'GET':
+        return render_template("upload.html")
     file = request.files['file']
     if file.filename == '':
         return 'No selected file'
