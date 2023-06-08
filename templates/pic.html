@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-06-06 10:03:07
+ * @LastEditTime: 2023-06-08 10:04:51
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -155,8 +155,9 @@
     <button onclick="changeImage2pic()">切换普通版</button>
     {% endif %}
     <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">👍</button>
-    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;" color="red">👎</button>
-    <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;" color="red" ;>分类错了</button>
+    <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;">👎</button>
+    <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;">分类错了</button>
+    <button id="Buttone" onclick="download()" style="display:inline-block;">下载</button>
     <p id="myImageText">1/1742</p>
     <div id="floating-box">
         <p id="message"></p>
@@ -288,6 +289,15 @@
             });
         }
 
+        function download() {
+            var link = document.createElement('a');
+            link.download = images[currentImageIndex].split('/')[2]; // 设置下载文件的名称
+            link.href = "/pic_src/" + images[currentImageIndex]; // 这里的路径应该是服务器端存储文件的地址
+            document.body.appendChild(link);
+            window.open(link.href);
+            document.body.removeChild(link); // 移除链接节点
+        }
+
         function changeImage2Npic() {
             images = {{ Npic_image_urls | safe }};
         updateImage();
@@ -297,6 +307,8 @@
             images = {{ pic_image_urls | safe }};
         updateImage();
         }
+
+
 
     </script>
 

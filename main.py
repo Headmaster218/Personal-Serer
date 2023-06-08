@@ -47,17 +47,8 @@ with open('data/likes/pic.json', 'r') as f:   # 打开一个JSON数据文件
 pic_dict_op_times = 0
 Npic_dict_op_times = 0
 
-
-#获取指定路径下的文件名（不含路径）并返回到一个列表中。
-def get_file_names(path_list):
-    file_names = []
-    for path in path_list:
-        temp_file_names = [file_path[8:] for file_path in glob.glob(path)]
-        file_names.extend(temp_file_names)
-    return file_names
-
-Spic_urls = get_file_names(['D:/HTML/SFW/国内/*.jpg', 'D:/HTML/SFW/欧美/*.jpg', 'D:/HTML/SFW/大哥/*.jpg'])
-Npic_urls = get_file_names(['D:/HTML/NSFW/国内/*.jpg', 'D:/HTML/NSFW/欧美/*.jpg', 'D:/HTML/NSFW/大哥/*.jpg'])
+Spic_urls = list(pic_imgs_dict.keys())
+Npic_urls = list(Npic_imgs_dict.keys())
 
 # 登录路由
 @app.route('/', methods=['GET', 'POST'])
@@ -156,10 +147,10 @@ def pic():
 def pic_handler(subpath):
     if subpath[:3] == "NSF":
         if session.get('username') in USERS:
-           return send_file(r'D:/HTML/'+subpath)
+           return send_file(r'D:/HTML/'+subpath, as_attachment= True)
         else:
             return render_template('login.html')
-    return send_file(r'D:/HTML/'+subpath)
+    return send_file(r'D:/HTML/'+subpath, as_attachment= True)
 
 # 图片点赞路由
 @app.route("/like", methods=['POST'])
@@ -174,14 +165,14 @@ def like():
         with open('data/likes/pic.json', 'w') as f:
             json.dump(pic_imgs_dict, f)
 
-    if message[:11] == '/static/pic':
+    if message[:3] == 'SFW':
         pic_dict_op_times+=1
-        pic_imgs_dict[message[12:]][number] += 1
-        return str(pic_imgs_dict[message[12:]][number])
+        pic_imgs_dict[message][number] += 1
+        return str(pic_imgs_dict[message][number])
     else:
         Npic_dict_op_times+=1
-        Npic_imgs_dict[message[13:]][number] += 1
-        return str(Npic_imgs_dict[message[13:]][number])
+        Npic_imgs_dict[message][number] += 1
+        return str(Npic_imgs_dict[message][number])
 
 # 上传文件路由
 @app.route("/upload", methods=['GET', 'POST'])
