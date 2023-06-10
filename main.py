@@ -119,9 +119,10 @@ def video():
 # 单独处理高级视频
 @app.route('/static/video/<string:subpath>')
 def video_handler(subpath):
-    # return send_file(r'P:/阿凡达2.mkv', as_attachment=False)
     if session.get('username') in USERS:
         path = r'D:\HTML\Zzz\double\\'+subpath
+        #return send_file(r'P:/《皇后乐队蒙特利尔现场演唱会》Queen.Rock.Montreal.And.Live.Aid.2007.720p.BluRay.x264-BDLiVE.mkv', as_attachment=False)
+        #return send_file(r'P:/阿凡达2.mkv', as_attachment=False)
         return send_file(path, as_attachment=False)
     else:
         return render_template('login.html')

@@ -2,7 +2,7 @@
  * @Author: Headmaster1615  e-mail:hm-218@qq.com
  * @Date: 2023-05-15 11:55:24
  * @LastEditors: Headmaster1615(Mac)  e-mail:hm-218@qq.com
- * @LastEditTime: 2023-06-08 10:04:51
+ * @LastEditTime: 2023-06-09 09:28:51
  * @FilePath: \个人服务器\templates\pic.html
  * @Description: 
  * 
@@ -23,34 +23,39 @@
         h3,
         p {
             color: rgb(255, 255, 255);
+            margin: 0%;
             /* 设置颜色 */
         }
 
         /* 设置滑块容器样式 */
         .slider-container {
             width: 80%;
-            margin: 0 auto;
+            margin-bottom: auto;
+            padding-bottom: 0.5%;
+            background:#39baff89;
+            outline: #ddd;
+            /* 水平居中 */
+            margin-left: 10%;
         }
 
         /* 图片容器样式 */
+        /*设置原点在中上*/
         .image-container {
             width: 100vw;
             height: 90vh;
             overflow: hidden;
             /* 避免图像溢出 */
             position: relative;
+            top: 50%;
         }
 
         /* 图片样式 */
         .image-container img {
             max-width: 100%;
             max-height: 100%;
-            position: absolute;
-            /* 需要绝对定位，方便图片缩放 */
             top: 0;
-            left: 0;
-            transform-origin: top left;
-            /* 指定变换原点为左上角 */
+            left: 0%;
+            transform-origin: center top;
         }
 
         /* 滑块样式 */
@@ -58,10 +63,10 @@
             -webkit-appearance: none;
             width: 100%;
             height: 5px;
-            background: #ddd;
-            outline: none;
-            border-radius: 5px;
-            margin-top: 10px;
+            background: rgba(9, 235, 69, 0.548);
+            outline: lightblue;
+            border-radius: 1px;
+            margin-top: 0.5px;
         }
 
         /* 去掉滑块默认样式 */
@@ -120,6 +125,14 @@
             /* 设置按钮圆角 */
         }
 
+        .button-red {
+            background-color: #f44336ee;
+        }
+        .button-red:hover {
+            background-color: #f44336;
+        }
+        
+
         /* 悬浮时改变背景色 */
         button:hover {
             background-color: #3e8e41;
@@ -157,7 +170,7 @@
     <button id="Button0" onclick="sendRequest('0')" style="display:inline-block;">👍</button>
     <button id="Button1" onclick="sendRequest('1')" style="display:inline-block;">👎</button>
     <button id="Button2" onclick="sendRequest('2')" style="display:inline-block;">分类错了</button>
-    <button id="Buttone" onclick="download()" style="display:inline-block;">下载</button>
+    <button id="Button3" class="button-red" onclick="download()" style="display:inline-block;">下载</button>
     <p id="myImageText">1/1742</p>
     <div id="floating-box">
         <p id="message"></p>
@@ -165,10 +178,10 @@
     <div class="slider-container">
         <input type="range" min="50" max="200" value="100" id="zoom-slider">
     </div>
-    <br>
-
-    <div class="image-container">
-        <img src='{{ "/pic_src/" + pic_image_urls[0] }}' alt="1/1742">
+    <center>
+        <div class="image-container">
+           <img src='{{ "/pic_src/" + pic_image_urls[0] }}' alt="1/1742">
+    </center>
     </div>
 </body>
 
@@ -204,8 +217,6 @@
             image.style.width = "auto";
             image.style.height = "auto";
             image.style.transform = `scale(${sliderValue / 100})`;
-
-            // 如果需要等比例缩放图片，并始终填充容器，请使用以下注释中提供的代码。
         });
 
         function showMessage(message, duration) {
@@ -282,6 +293,7 @@
             document.getElementById("Button0").innerHTML = '👍';
             document.getElementById("Button1").innerHTML = '👎';
             document.getElementById("Button2").innerHTML = '分类错了';
+            document.getElementById("Button3").innerHTML = '下载'+this.naturalWidth+'X'+this.naturalHeight;
             });
             // 监听图片加载失败事件,未登录时跳转到登录页面
             imgElement.addEventListener('error', function() {
